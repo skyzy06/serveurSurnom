@@ -2,6 +2,10 @@ package protocole;
 
 import java.util.Calendar;
 
+/**
+ *
+ * @author Administrateur
+ */
 public class Command {
 
     // => parameter for the request to the server

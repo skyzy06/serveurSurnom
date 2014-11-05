@@ -4,6 +4,10 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ * @author Administrateur
+ */
 public class AddCommand extends Command {
 
     // => parameter for the request to the server
