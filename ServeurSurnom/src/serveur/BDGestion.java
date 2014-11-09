@@ -5,16 +5,19 @@
  */
 package serveur;
 
-import com.sun.xml.internal.ws.api.pipe.Fiber;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 /**
  *
@@ -22,33 +25,69 @@ import org.jdom2.input.SAXBuilder;
  */
 public class BDGestion {
 
-    private HashMap<String, String> surnomMap;
-    private final String filename = "BD/surnoms.xml";
-    private static Document document;
+    private static HashMap<String, String> surnomMap;
+    private static final String filename = "src/surnoms.xml";
+    private static Element racine = new Element("surnoms");
+    private static Document document = new Document(racine);
+    private static final String SURNOM = "surnom";
+    private static final String NOM = "nom";
+    private static final String VALUE = "value";
+
+    /**
+     * Juste pour les tests
+     * @param args 
+     */
+    public static void main(String[] args) {
+        BDGestion bdsurnom = new BDGestion();
+        bdsurnom.initSurnomMap();
+        System.out.println(surnomMap);
+        surnomMap.put("sopalin", "Chabert");
+        System.out.println(surnomMap);
+        bdsurnom.saveSurnomMap();
+    }
 
     public BDGestion() {
         surnomMap = new HashMap<String, String>();
     }
 
+    /**
+     * Méthode permettant initialiser la HashMap au lancement du serveur
+     */
     public void initSurnomMap() {
         SAXBuilder sxb = new SAXBuilder();
         try {
             document = sxb.build(new File(filename));
-        } catch (JDOMException | IOException e) {
+            racine = document.getRootElement();
+        } catch (JDOMException | IOException ex) {
         }
-        
-        Element root = document.getRootElement();
-        List<Element> surnoms = root.getChildren("surnom");
+        List<Element> surnoms = racine.getChildren(SURNOM);
         Iterator<Element> it = surnoms.iterator();
-        
-        while(it.hasNext()){
+
+        while (it.hasNext()) {
             Element courant = it.next();
-            Element nom = courant.getChild("nom");
-            surnomMap.put(courant.getText(), nom.getText());
+            surnomMap.put(courant.getAttributeValue(VALUE), courant.getAttribute(NOM).getValue());
         }
     }
-    
-    public void saveSurnomMap(){
-        
+
+    /**
+     * Méthode permettant de sauvegarder la HashMap à l'arrêt du serveur
+     */
+    public void saveSurnomMap() {
+        Set key = surnomMap.keySet();
+        Iterator it = key.iterator();
+        racine.removeContent();
+
+        while (it.hasNext()) {
+            Object surnom = it.next();
+            Element newSurnom = new Element(SURNOM);
+            newSurnom.setAttribute(VALUE, surnom.toString());
+            newSurnom.setAttribute(NOM, surnomMap.get(surnom));
+            racine.addContent(newSurnom);
+        }
+        try {
+            XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
+            sortie.output(document, new FileOutputStream(filename));
+        } catch (Exception ex) {
+        }
     }
 }
