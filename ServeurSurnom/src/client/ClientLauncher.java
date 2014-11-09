@@ -21,8 +21,8 @@ public class ClientLauncher {
             System.exit(1);
         }
 
-        String hostname = args[0];
-        int portNumber = Integer.parseInt(args[1]);
+        String hostname = "127.0.0.1";//args[0];
+        int portNumber = 1999;//Integer.parseInt(args[1]);
 
         Client clientSocket = new Client(hostname, portNumber);
         clientSocket.commandReader();

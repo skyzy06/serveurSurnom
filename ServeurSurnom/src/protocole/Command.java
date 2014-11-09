@@ -1,12 +1,13 @@
 package protocole;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  *
  * @author Administrateur
  */
-public class Command {
+public class Command implements Serializable {
 
     // => parameter for the request to the server
     Calendar date = Calendar.getInstance();
