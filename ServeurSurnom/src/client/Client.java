@@ -23,14 +23,13 @@ public class Client {
     private Socket socketClient;
     private BufferedWriter out;
     private BufferedReader in;
-    private Scanner sc;
+    private Scanner sc = new Scanner(System.in);
 
     public Client(String hostName, int portNumber) {
         try {
             socketClient = new Socket(hostName, portNumber);
             out = new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream()));
             in = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-            sc = new Scanner(System.in);
             System.out.println("connecté au serveur");
         } catch (UnknownHostException e) {
             System.err.println("Impossible de se connecter à " + hostName);
