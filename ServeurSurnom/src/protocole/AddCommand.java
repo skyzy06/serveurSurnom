@@ -24,8 +24,7 @@ public class AddCommand extends Command {
      * @param name
      * @param nicknames
      */
-    public AddCommand(boolean succeed, Calendar date, String name,
-            List<String> nicknames) {
+    public AddCommand(boolean succeed, Calendar date, String name, List<String> nicknames) {
         super(succeed, date);
         this.name = name;
         this.nicknames = nicknames;
