@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author Administrateur
  */
-public class Serveur extends Thread {
+public class Serveur {
 
     private ServerSocket socketServeur;
     private Socket clientSocket = null;
