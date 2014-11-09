@@ -1,63 +1,37 @@
 package protocole;
 
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Administrateur
- */
 public class AddCommand extends Command {
-
-    // => parameter for the request to the server
+	private static final long serialVersionUID = 1L;
+	
+	// => parameter for the request to the server
     String name = "";
     List<String> nicknames = new LinkedList<String>();
 
     // <= eventual error message in the response of the server
-    String errorMsg = "";
+    List<String> errorMsgs = new LinkedList<String>();
 
-    /**
-     *
-     * @param succeed
-     * @param date
-     * @param name
-     * @param nicknames
-     */
-    public AddCommand(boolean succeed, Calendar date, String name, List<String> nicknames) {
-        super(succeed, date);
+    public AddCommand(String name,
+            List<String> nicknames) {
+        super();
         this.name = name;
         this.nicknames = nicknames;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getErrorMsg() {
-        return errorMsg;
-    }
+	public List<String> getErrorMsgs() {
+		return errorMsgs;
+	}
 
-    /**
-     *
-     * @param errorMsg
-     */
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
+	public void addErrorMsg(String errorMsg) {
+		this.errorMsgs.add(errorMsg);
+	}
 
-    /**
-     *
-     * @return
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     *
-     * @return
-     */
     public List<String> getNicknames() {
         return nicknames;
     }
