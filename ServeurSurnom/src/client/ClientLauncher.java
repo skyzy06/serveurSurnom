@@ -25,6 +25,6 @@ public class ClientLauncher {
         int portNumber = 1999;//Integer.parseInt(args[1]);
 
         Client clientSocket = new Client(hostname, portNumber);
-        clientSocket.commandReader();
+        clientSocket.commandPrompt();
     }
 }
