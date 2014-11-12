@@ -51,21 +51,21 @@ public class Client {
 
     /**
      * Methode permettant d'interprete les commandes du client
+     *
+     * @return si la commande est correcte ou non
+     * @throws java.io.IOException
      */
     public boolean commandPrompt() throws IOException {
         System.out.println("Choississez la requete a executer ou \"quit\" pour sortir");
         System.out.println("ADD : pour ajouter un nom et un surnom");
         System.out.println("LIST : pour lister l'ensemble des surnoms");
 
-        String choix;
-        String requete = "";
         boolean correct = false;
 
         do {
             System.out.print("Votre choix : ");
-            choix = sc.next();
-            requete = commandSelection(choix);
-        } while (correct == false || choix == "quit");
+            correct = commandSelection(sc.next());
+        } while (correct == false);
         ObjectInputStream ois = new ObjectInputStream(socketClient.getInputStream());
         try {
             while (true) {
@@ -94,7 +94,7 @@ public class Client {
      * @param choix la commande a executer
      * @return la reponse de la commande
      */
-    private String commandSelection(String choix) throws IOException {
+    private boolean commandSelection(String choix) throws IOException {
         switch (choix) {
             //TODO remplacer par les appels de mÃ©thodes
             case "ADD":
@@ -108,10 +108,11 @@ public class Client {
                     System.out.print("Voulez-vous en ajouter un autre? : ");
                 } while (!sc.next().equals("no"));
                 out.writeObject(new AddCommand(nom, surnom));
+                return true;
             case "LIST":
-                return "LIST";
+                return true;
         }
-        return "Default";
+        return false;
     }
 
     public boolean sendTest() {
