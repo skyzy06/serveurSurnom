@@ -25,21 +25,26 @@ public class Serveur {
     private ServerSocket socketServeur;
     private Socket clientSocket = null;
     private boolean listening = true; // écoute ou non
+    private int portNumber;
+    
+    public Serveur(int portNumber) {
+    	this.portNumber = portNumber;
+    }
 
-    public Serveur(int portNumber) throws IOException {
+    public void connect() throws IOException {
         //To avoid the "address already in use" exception
     	socketServeur = new ServerSocket();
         socketServeur.setReuseAddress(true);
-        try{
-        	socketServeur.bind(new InetSocketAddress(portNumber));
-            clientSocket = socketServeur.accept();
-        }catch(java.net.BindException b){
-        	
-        }
-        
+        socketServeur.bind(new InetSocketAddress(portNumber));
     }
+    
+    public void disconnect() throws IOException{
+    	socketServeur.close();
+    }
+    
+    public void run() throws IOException {
 
-    public void run() {
+        clientSocket = socketServeur.accept();
         System.out.println("Un client connecté");
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
