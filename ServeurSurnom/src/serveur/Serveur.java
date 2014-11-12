@@ -26,22 +26,22 @@ public class Serveur {
     private Socket clientSocket = null;
     private boolean listening = true; // écoute ou non
     private int portNumber;
-    
+
     public Serveur(int portNumber) {
-    	this.portNumber = portNumber;
+        this.portNumber = portNumber;
     }
 
     public void connect() throws IOException {
         //To avoid the "address already in use" exception
-    	socketServeur = new ServerSocket();
+        socketServeur = new ServerSocket();
         socketServeur.setReuseAddress(true);
         socketServeur.bind(new InetSocketAddress(portNumber));
     }
-    
-    public void disconnect() throws IOException{
-    	socketServeur.close();
+
+    public void disconnect() throws IOException {
+        socketServeur.close();
     }
-    
+
     public void run() throws IOException {
 
         clientSocket = socketServeur.accept();

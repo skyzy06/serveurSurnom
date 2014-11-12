@@ -17,9 +17,9 @@ public class ClientLauncher {
 
     public static void main(String[] args) throws IOException {
         /*if (args.length != 2) {
-            System.err.println("La commande de lancement est de la forme java ClientLauncher <HOSTNAME> <PORTNUM>");
-            System.exit(1);
-        }*/
+         System.err.println("La commande de lancement est de la forme java ClientLauncher <HOSTNAME> <PORTNUM>");
+         System.exit(1);
+         }*/
 
         String hostname = "127.0.0.1";//args[0];
         int portNumber = 1999;//Integer.parseInt(args[1]);

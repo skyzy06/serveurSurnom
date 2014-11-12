@@ -24,39 +24,38 @@ import java.util.Scanner;
  */
 public class Client {
 
-	String hostName;
+    String hostName;
     int portNumber;
 
     private Socket socketClient;
-    
+
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    
+
     private Scanner sc = new Scanner(System.in);
-    
 
     public Client(String hostName, int portNumber) {
         this.hostName = hostName;
         this.portNumber = portNumber;
     }
 
-    public void connect() throws UnknownHostException, IOException{
-            socketClient = new Socket();
-            socketClient.setReuseAddress(true);
-            try{
-            socketClient.bind(new InetSocketAddress(hostName,portNumber));    
-            }catch(BindException be){
-            	System.out.println("erreur de bind");
-            	throw new IOException();
-            }
-            out = new ObjectOutputStream(socketClient.getOutputStream());
-            in = new ObjectInputStream(socketClient.getInputStream());
+    public void connect() throws UnknownHostException, IOException {
+        socketClient = new Socket();
+        socketClient.setReuseAddress(true);
+        try {
+            socketClient.bind(new InetSocketAddress(hostName, portNumber));
+        } catch (BindException be) {
+            System.out.println("erreur de bind");
+            throw new IOException();
+        }
+        out = new ObjectOutputStream(socketClient.getOutputStream());
+        in = new ObjectInputStream(socketClient.getInputStream());
     }
-    
-    public void disconnect() throws IOException{
-    	socketClient.close();
+
+    public void disconnect() throws IOException {
+        socketClient.close();
     }
-    
+
     /**
      * Méthode permettant d'interprété les commandes du client
      */
@@ -68,16 +67,15 @@ public class Client {
         String choix;
         String requete = "";
         boolean correct = false;
-        
+
         do {
             System.out.print("Votre choix : ");
             choix = sc.next();
             requete = commandSelection(choix);
-        } while (correct==false || choix=="quit");
-        
+        } while (correct == false || choix == "quit");
+
         return correct;
     }
-    
 
     /**
      * Méthode permettant d'exécuter la commande demandée
@@ -95,15 +93,15 @@ public class Client {
         }
         return "Default";
     }
-    
-    public boolean sendTest(){
-    	try {
-			out.writeUTF("test");
-			return true;
-    	} catch (IOException e) {
-			return false;
-		}
- 
+
+    public boolean sendTest() {
+        try {
+            out.writeUTF("test");
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+
     }
-    
+
 }
