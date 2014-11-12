@@ -5,16 +5,11 @@
  */
 package serveur;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -22,41 +17,44 @@ import java.util.logging.Logger;
  */
 public class Serveur {
 
-    private ServerSocket socketServeur;
+    public static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
+    private ServerSocket socketServeur = null;
     private Socket clientSocket = null;
-    private boolean listening = true; // écoute ou non
-    private int portNumber;
+    private boolean listening = true; // ecoute ou non
+    private int nbClient = 0;
 
-    public Serveur(int portNumber) {
-        this.portNumber = portNumber;
+    public Serveur(int portNumber) throws IOException {
+        // To avoid the "address already in use" exception
+        socketServeur = new ServerSocket(portNumber);
+        System.out.println("Server launched, listening...");
+        /*
+         * socketServeur = new ServerSocket();
+         * socketServeur.setReuseAddress(true); try{ socketServeur.bind(new
+         * InetSocketAddress(portNumber)); clientSocket =
+         * socketServeur.accept(); }catch(java.net.BindException b){
+         * 
+         * }
+         */
+
     }
 
-    public void connect() throws IOException {
-        //To avoid the "address already in use" exception
-        socketServeur = new ServerSocket();
-        socketServeur.setReuseAddress(true);
-        socketServeur.bind(new InetSocketAddress(portNumber));
-    }
-
-    public void disconnect() throws IOException {
-        socketServeur.close();
-    }
-
-    public void run() throws IOException {
-
-        clientSocket = socketServeur.accept();
-        System.out.println("Un client connecté");
-        try {
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            {
-                String inputLine;
-                while (listening && (inputLine = in.readLine()) != null) {
-                    //TODO  command response
-                }
+    public void run() {
+        while (true) {
+            Socket socket = null;
+            try {
+                socket = socketServeur.accept();
+                socket.setSoTimeout(60 * 1000);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
+            System.out.println("Server : Le client numéro " + nbClient + " est connecté !");
+            nbClient++;
+            /**
+             * Create thread to execute request of this client without blocked
+             * other incoming connections
+             */
+            Thread process = new Thread(new CommandListener(socket));
+            process.start();
         }
-
     }
 }
