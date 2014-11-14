@@ -7,8 +7,10 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
-import protocole.AddCommand;
-import protocole.ExitCommand;
+import protocole.Add;
+import protocole.AddException;
+import protocole.Exit;
+import protocole.NameAlreadyExistsException;
 
 public class Client {
 	/**
@@ -21,16 +23,15 @@ public class Client {
 			/**
 			 * Try to connect to the server and initialize stream
 			 */
-			soc = new Socket(InetAddress.getLocalHost(), 9999);
+			soc = new Socket(InetAddress.getLocalHost(), 1234);
 			ObjectOutputStream out = new ObjectOutputStream(soc.getOutputStream());  
-		   
 	
 			/**
 			 * Construtct request to set nickname 'Ana' to 'Anais' and send it
 			 */
 			List<String> l = new LinkedList<String>();
 			l.add("Ana");
-		    out.writeObject(new AddCommand("Anaïs", l));
+		    out.writeObject(new Add("Anaïs", l));
 		    
 		    /**
 		     * Waiting server response
@@ -38,11 +39,15 @@ public class Client {
 		    ObjectInputStream ois = new ObjectInputStream(soc.getInputStream());
 			try {
 				while(true) {
-					AddCommand cmd = (AddCommand)ois.readObject();
+					Add cmd = (Add)ois.readObject();
 					if(cmd != null) {
 						System.out.println("Result : " + cmd.isSucceed());
 						if(!cmd.isSucceed()) {
-							System.out.println("Result : " + cmd.isSucceed() + cmd.getErrorMsgs().toString());
+							for(AddException e : cmd.getErrors()) {
+								
+								System.out.println(((NameAlreadyExistsException) e).getName());
+								System.out.println(((NameAlreadyExistsException) e).getMessage());
+							}
 						}
 						break;
 					}
@@ -59,7 +64,7 @@ public class Client {
 		    /**
 		     * 	OK now we closed the connection
 		     */
-		    out.writeObject(new ExitCommand());
+		    out.writeObject(new Exit());
 		    		    
 		    try {
 				Thread.sleep(10000);

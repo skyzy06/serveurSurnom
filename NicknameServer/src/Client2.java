@@ -5,8 +5,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import protocole.ExitCommand;
-import protocole.GetNicknamesCommand;
+import protocole.Exit;
+import protocole.GetNicknames;
 
 public class Client2 {
 	/**
@@ -19,14 +19,13 @@ public class Client2 {
 			/**
 			 * Try to connect to the server and initialize stream
 			 */
-			soc = new Socket(InetAddress.getLocalHost(), 9999);
+			soc = new Socket(InetAddress.getLocalHost(), 1234);
 			ObjectOutputStream out = new ObjectOutputStream(soc.getOutputStream());  
-		   
 	
 			/**
 			 * Construtct request to set nickname 'Ana' to 'Anais' and send it
 			 */
-		    out.writeObject(new GetNicknamesCommand("Anaïs"));
+		    out.writeObject(new GetNicknames("Anaïs"));
 		    
 		    /**
 		     * Waiting server response
@@ -34,7 +33,7 @@ public class Client2 {
 		    ObjectInputStream ois = new ObjectInputStream(soc.getInputStream());
 			try {
 				while(true) {
-					GetNicknamesCommand cmd = (GetNicknamesCommand)ois.readObject();
+					GetNicknames cmd = (GetNicknames)ois.readObject();
 					if(cmd != null) {
 						System.out.println("Result :" + cmd.getNicknames());
 						break;
@@ -52,7 +51,7 @@ public class Client2 {
 		    /**
 		     * 	OK now we closed the connection
 		     */
-		    out.writeObject(new ExitCommand());
+		    out.writeObject(new Exit());
 		    		    
 		    try {
 				Thread.sleep(10000);
