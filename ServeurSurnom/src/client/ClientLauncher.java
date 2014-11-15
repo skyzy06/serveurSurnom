@@ -8,13 +8,13 @@ public class ClientLauncher {
 
 		Client client = new Client("localhost",1234);
 		client.connect();
-		client.sendTest();
-
 		try {
+			client.commandPrompt();
 			client.disconnect();
-		} catch (IOException e) {
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
+		
 	}
 }

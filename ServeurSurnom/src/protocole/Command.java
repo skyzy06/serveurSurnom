@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public abstract class Command implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     // <= response to the server
     boolean isSucceed = false;

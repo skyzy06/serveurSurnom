@@ -5,18 +5,15 @@
  */
 package serveur;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
+import java.net.InetSocketAddress;import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.List;
 
 import protocole.Command;
 
@@ -30,6 +27,8 @@ public class Serveur {
 	private Socket clientSocket = null;
 	private boolean listening = true; // écoute ou non
 	private int portNumber;
+    public static HashMap<String, List<String>> data = new HashMap<String, List<String>>();
+    private int nbClient = 0;
 
 	public Serveur(int portNumber) {
 		this.portNumber = portNumber;
@@ -46,7 +45,7 @@ public class Serveur {
 		socketServeur.close();
 	}
 
-	public void run() throws IOException {
+	public void run1() throws IOException {
 
 		clientSocket = socketServeur.accept();
 		listening =false;
@@ -71,4 +70,25 @@ public class Serveur {
 		}
 
 	}
+	
+
+    public void run() {
+        while (true) {
+            Socket socket = null;
+            try {
+                socket = socketServeur.accept();
+                socket.setSoTimeout(60 * 1000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Server : Le client numéro " + nbClient + " est connecté !");
+            nbClient++;
+            /**
+             * Create thread to execute request of this client without blocked
+             * other incoming connections
+             */
+            Thread process = new Thread(new CommandListener(socket));
+            process.start();
+        }
+    }
 }
