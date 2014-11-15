@@ -13,10 +13,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.BindException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import protocole.AddCommand;
 
 /**
  *
@@ -31,26 +37,34 @@ public class Client {
     
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    
-    private Scanner sc = new Scanner(System.in);
+    private Scanner sc;
     
 
-    public Client(String hostName, int portNumber) {
-        this.hostName = hostName;
+    public Client(String host, int portNumber) {
+        this.hostName = host;
         this.portNumber = portNumber;
+        sc = new Scanner(System.in);
     }
 
-    public void connect() throws UnknownHostException, IOException{
-            socketClient = new Socket();
-            socketClient.setReuseAddress(true);
-            try{
-            socketClient.bind(new InetSocketAddress(hostName,portNumber));    
-            }catch(BindException be){
-            	System.out.println("erreur de bind");
-            	throw new IOException();
+    public boolean connect() {
+            //socketClient = new Socket();
+            
+            try	{
+            	socketClient = new Socket(hostName,portNumber);
+            	/*
+                socketClient.setReuseAddress(true);
+	            socketClient.bind(new InetSocketAddress(hostName,portNumber));    
+	            */
+	            out = new ObjectOutputStream(socketClient.getOutputStream());
+	            //in = new ObjectInputStream(socketClient.getInputStream());
+	            
+	            return true;
+            
+            }catch(Exception e){
+            	e.printStackTrace();
+            	return false;
             }
-            out = new ObjectOutputStream(socketClient.getOutputStream());
-            in = new ObjectInputStream(socketClient.getInputStream());
+            
     }
     
     public void disconnect() throws IOException{
@@ -95,10 +109,15 @@ public class Client {
         }
         return "Default";
     }
-    
+
+
     public boolean sendTest(){
+    	List<String> l = new ArrayList<String>();
+    	
+    	AddCommand addTest = new AddCommand("string", l);
     	try {
-			out.writeUTF("test");
+			out.writeObject(addTest);
+			out.flush();
 			return true;
     	} catch (IOException e) {
 			return false;
