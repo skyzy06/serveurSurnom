@@ -10,7 +10,6 @@ public class ServeurLauncher {
 		try {
 			serveur.connect();
 			serveur.run();
-			serveur.disconnect();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

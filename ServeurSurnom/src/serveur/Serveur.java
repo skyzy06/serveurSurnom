@@ -6,10 +6,8 @@
 package serveur;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -41,36 +39,6 @@ public class Serveur {
 		socketServeur.bind(new InetSocketAddress(portNumber));
 	}
 
-	public void disconnect() throws IOException{
-		socketServeur.close();
-	}
-
-	public void run1() throws IOException {
-
-		clientSocket = socketServeur.accept();
-		listening =false;
-		System.out.println("Un client connecté");
-		try {
-			ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-			ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-
-			System.out.println("okk");
-			
-			
-			Object o = in.readObject();
-			if(o instanceof Command){
-				Command c = (Command)o;
-				System.out.println("okok");
-			}
-			if(o instanceof Exception){
-
-			}
-
-		} catch (IOException | ClassNotFoundException e) {
-		}
-
-	}
-	
 
     public void run() {
         while (true) {

@@ -60,13 +60,9 @@ public class Client {
             
     }
     
-    public void disconnect() throws IOException{
-    	socketClient.close();
-    }
-    
 
     /**
-     * Methode permettant d'interprete les commandes du client
+     * Permet d'avoir une invite de commande pour choisir la commande à envoyer
      *
      * @return si la commande est correcte ou non
      * @throws java.io.IOException
@@ -78,16 +74,16 @@ public class Client {
 
         boolean correct = false;
 
+        //Demande, vérifie et envoie la commande
         do {
             System.out.print("Votre choix : ");
             correct = commandSelection(sc.next());
         } while (correct == false);
         
-        //wait for the response
-        ObjectInputStream ois = new ObjectInputStream(socketClient.getInputStream());
+        //Attente de la réponse
         try {
             while (true) {
-                AddCommand cmd = (AddCommand) ois.readObject();
+                AddCommand cmd = (AddCommand) in.readObject();
                 if (cmd != null) {
                     System.out.println("Result : " + cmd.isSucceed());
                     if (!cmd.isSucceed()) {
@@ -99,6 +95,8 @@ public class Client {
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         }
+        
+        //Procédure de fin
         out.writeObject(new ExitCommand());
         in.close();
         out.close();
@@ -126,6 +124,7 @@ public class Client {
                     System.out.print("Voulez-vous en ajouter un autre? : ");
                 } while (!sc.next().equals("no"));
                 out.writeObject(new AddCommand(nom, surnom));
+                out.flush();
                 return true;
             case "LIST":
                 return true;
