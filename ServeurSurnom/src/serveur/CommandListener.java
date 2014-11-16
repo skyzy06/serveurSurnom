@@ -7,7 +7,14 @@ package serveur;
 
 import java.io.*;
 import java.net.*;
+
 import protocole.*;
+import protocole.command.Add;
+import protocole.command.Command;
+import protocole.command.Exit;
+import protocole.command.GetNicknames;
+import protocole.exception.AddException;
+import protocole.exception.GetNicknamesException;
 
 /**
  *
@@ -38,7 +45,7 @@ public class CommandListener implements Runnable{
                 Command cmd = (Command) ois.readObject();
                 if (cmd != null) {
 // Case client disconnect
-                    if (cmd instanceof ExitCommand) {
+                    if (cmd instanceof Exit) {
                         System.out.println("Client closed the established connection");
                         ois.close();
                         out.close();
@@ -68,26 +75,26 @@ public class CommandListener implements Runnable{
         /**
          * Determine which command was send by client
          */
-        if (cmd instanceof AddCommand) {
-            this.execCommand((AddCommand) cmd);
-        } else if (cmd instanceof GetNicknamesCommand) {
-            this.execCommand((GetNicknamesCommand) cmd);
+        if (cmd instanceof Add) {
+            this.execCommand((Add) cmd);
+        } else if (cmd instanceof GetNicknames) {
+            this.execCommand((GetNicknames) cmd);
         }
     }
 
-    public void execCommand(AddCommand c) {
+    public void execCommand(Add c) {
         System.out.println("Server : ADD");
         c.setSucceed(true);
         for (String n : Serveur.data.keySet()) {
             if (c.getName().equals(n)) {
                 c.setSucceed(false);
-                c.addErrorMsg(c.getName().toString() + " name already exists.");
+                c.addError(new AddException(c.getName().toString() + " name already exists."));
             }
             for (String nk : Serveur.data.get(n)) {
                 for (String nkCmd : c.getNicknames()) {
                     if (nk.equals(nkCmd)) {
                         c.setSucceed(false);
-                        c.addErrorMsg(nkCmd + " nickname already exists.");
+                        c.addError(new AddException(nkCmd + " nickname already exists."));
                     }
                 }
             }
@@ -98,7 +105,7 @@ public class CommandListener implements Runnable{
         this.sendResponse(c);
     }
 
-    public void execCommand(GetNicknamesCommand c) {
+    public void execCommand(GetNicknames c) {
         System.out.println("Server : GET");
         c.setSucceed(true);
         for (String n : Serveur.data.keySet()) {
@@ -109,7 +116,7 @@ public class CommandListener implements Runnable{
             }
         }
         c.setSucceed(false);
-        c.setErrorMsg(c.getName().toString() + " name doesn't exist.");
+        c.setError(new GetNicknamesException(c.getName().toString() + " name doesn't exist."));
         this.sendResponse(c);
     }
 

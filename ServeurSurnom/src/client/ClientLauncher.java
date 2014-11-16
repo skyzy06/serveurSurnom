@@ -9,7 +9,11 @@ public class ClientLauncher {
 		Client client = new Client("localhost",1234);
 		if(client.connect())
 		try {
-			while(client.commandPrompt());
+			do{
+				client.connect();
+			}while(client.commandPrompt());
+			
+			System.out.println("Exiting programm...");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

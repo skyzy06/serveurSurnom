@@ -18,8 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import protocole.AddCommand;
-import protocole.ExitCommand;
+import protocole.command.Add;
+import protocole.command.Exit;
+import protocole.command.GetNicknames;
 
 /**
  *
@@ -74,30 +75,38 @@ public class Client {
 
         boolean correct = false;
 
+        String userInput;
         //Demande, vérifie et envoie la commande
         do {
             System.out.print("Votre choix : ");
-            correct = commandSelection(sc.next());
+            userInput =sc.next();
+            correct = commandSelection(userInput);
         } while (correct == false);
         
-        //Attente de la réponse
-        try {
-            while (true) {
-                AddCommand cmd = (AddCommand) in.readObject();
-                if (cmd != null) {
-                    System.out.println("Result : " + cmd.isSucceed());
-                    if (!cmd.isSucceed()) {
-                        System.out.println("Result : " + cmd.isSucceed() + cmd.getErrorMsgs().toString());
+        
+        if(!userInput.equals("quit")){
+        	//Attente de la réponse
+            try {
+            	System.out.println(userInput.length());
+                while (true) {
+                    Add cmd = (Add) in.readObject();
+                    if (cmd != null) {
+                        System.out.println("Result : " + cmd.isSucceed());
+                        if (!cmd.isSucceed()) {
+                            System.out.println("Result : " + cmd.isSucceed() + cmd.getErrors().toString());
+                        }
+                        break;
                     }
-                    break;
                 }
+            } catch (ClassNotFoundException e1) {
+                e1.printStackTrace();
             }
-        } catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
+        }else{
+        	correct = false;
         }
         
         //Procédure de fin
-        out.writeObject(new ExitCommand());
+        out.writeObject(new Exit());
         in.close();
         out.close();
         socketClient.close();
@@ -112,7 +121,7 @@ public class Client {
      */
     private boolean commandSelection(String choix) throws IOException {
         switch (choix) {
-            //TODO remplacer par les appels de mÃƒÂ©thodes
+
             case "ADD":
                 String nom;
                 List<String> surnom = new LinkedList<String>();
@@ -123,11 +132,20 @@ public class Client {
                     surnom.add(sc.next());
                     System.out.print("Voulez-vous en ajouter un autre? : ");
                 } while (!sc.next().equals("no"));
-                out.writeObject(new AddCommand(nom, surnom));
+                out.writeObject(new Add(nom, surnom));
                 out.flush();
                 return true;
+                
             case "LIST":
+                String name;
+                System.out.print("A quel nom voulez-vous afficher les surnoms? : ");
+                name = sc.next();
+                out.writeObject(new GetNicknames(name));
+                out.flush();
                 return true;
+                
+            case "quit":
+            	return true;
         }
         return false;
     }
@@ -136,7 +154,7 @@ public class Client {
     public boolean sendTest(){
     	List<String> l = new ArrayList<String>();
     	
-    	AddCommand addTest = new AddCommand("string", l);
+    	Add addTest = new Add("string", l);
     	try {
 			out.writeObject(addTest);
 			out.flush();
