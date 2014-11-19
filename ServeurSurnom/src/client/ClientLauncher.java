@@ -15,7 +15,6 @@ public class ClientLauncher {
 			
 			System.out.println("Exiting programm...");
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}finally{		
 		}
