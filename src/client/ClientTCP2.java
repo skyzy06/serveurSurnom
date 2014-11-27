@@ -1,18 +1,15 @@
+package client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.List;
 
-import protocole.Add;
-import protocole.AddException;
 import protocole.Exit;
-import protocole.NameAlreadyExistsException;
+import protocole.GetNicknames;
 
-public class Client {
+public class ClientTCP2 {
 	/**
 	 * @param args
 	 */
@@ -29,9 +26,7 @@ public class Client {
 			/**
 			 * Construtct request to set nickname 'Ana' to 'Anais' and send it
 			 */
-			List<String> l = new LinkedList<String>();
-			l.add("Ana");
-		    out.writeObject(new Add("Anaïs", l));
+		    out.writeObject(new GetNicknames("Anaïs"));
 		    
 		    /**
 		     * Waiting server response
@@ -39,16 +34,9 @@ public class Client {
 		    ObjectInputStream ois = new ObjectInputStream(soc.getInputStream());
 			try {
 				while(true) {
-					Add cmd = (Add)ois.readObject();
+					GetNicknames cmd = (GetNicknames)ois.readObject();
 					if(cmd != null) {
-						System.out.println("Result : " + cmd.isSucceed());
-						if(!cmd.isSucceed()) {
-							for(AddException e : cmd.getErrors()) {
-								
-								System.out.println(((NameAlreadyExistsException) e).getName());
-								System.out.println(((NameAlreadyExistsException) e).getMessage());
-							}
-						}
+						System.out.println("Result :" + cmd.getNicknames());
 						break;
 					}
 				}
