@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-
 import protocole.command.Add;
 import protocole.command.Exit;
 import protocole.command.GetNicknames;
@@ -15,20 +14,25 @@ import sun.rmi.transport.tcp.TCPConnection;
 import sun.rmi.transport.tcp.TCPEndpoint;
 
 /**
+ * Classe contenant la création et l'interprétation des commandes clients
  *
  * @author Thomas Clop
  */
 public class Client {
 
-	String hostName;
+    String hostName;
     int portNumber;
-    
-    private ObjectTCP TCPconnection;
-    
-    private Scanner sc;
-    
-    //private Prompt prompt;    
 
+    private ObjectTCP TCPconnection;
+
+    private Scanner sc;
+
+    /**
+     * Constructeur du client
+     *
+     * @param host adresse du serveur
+     * @param portNumber port de communication du serveur
+     */
     public Client(String host, int portNumber) {
         this.hostName = host;
         this.portNumber = portNumber;
@@ -36,8 +40,13 @@ public class Client {
         this.TCPconnection = new ObjectTCP(hostName, portNumber);
     }
 
+    /**
+     * Retourner le test de la connection au serveur
+     *
+     * @return true si la connexion c'est bien déroulée
+     */
     public boolean connect() {
-           return TCPconnection.connect();
+        return TCPconnection.connect();
     }
 
     /**
@@ -54,37 +63,36 @@ public class Client {
         boolean correct = false;
 
         String userInput;
-        //Demande, v�rifie et envoie la commande
+        //Demande, vérifie et envoie la commande
         do {
             System.out.print("Votre choix : ");
             userInput = sc.next();
             correct = commandSelection(userInput);
-        } while (correct == false);
-        
-        
-        if(!userInput.equals("quit")){
-        	System.out.println(userInput.length());
-			while (true) {
-			    Add cmd = (Add) TCPconnection.read();
-			    if (cmd != null) {
-			        System.out.println("Result : " + cmd.isSucceed());
-			        if (!cmd.isSucceed()) {
-			            System.out.println("Result : " + cmd.isSucceed() + cmd.getErrors().toString());
-			        }
-			        break;
-			    }
-			}
-        }else{
-        	correct = false;
+        } while (correct == true);
+
+        if (!userInput.equals("quit")) {
+            System.out.println(userInput.length());
+            while (true) {
+                Add cmd = (Add) TCPconnection.read();
+                if (cmd != null) {
+                    System.out.println("Result : " + cmd.isSucceed());
+                    if (!cmd.isSucceed()) {
+                        System.out.println("Result : " + cmd.isSucceed() + cmd.getErrors().toString());
+                    }
+                    break;
+                }
+            }
+        } else {
+            correct = false;
         }
-        
-        //Proc�dure de fin
-        if(TCPconnection.send(new Exit())){
-        	if(TCPconnection.disconnect()){
-        		System.out.println("Déconnection OK");
-        	}
+
+        //Procédure de fin
+        if (TCPconnection.send(new Exit())) {
+            if (TCPconnection.disconnect()) {
+                System.out.println("Déconnection OK");
+            }
         }
-        
+
         return correct;
     }
 
@@ -105,26 +113,28 @@ public class Client {
                 do {
                     System.out.print("Quel surnom voulez-vous lui attribuer? : ");
                     surnom.add(sc.next());
-                    System.out.print("Voulez-vous en ajouter un autre? : ");
+                    System.out.print("Voulez-vous en ajouter un autre? (no pour arrêter): ");
                 } while (!sc.next().equals("no"));
-                
-                if(TCPconnection.send(new Add(nom, surnom))){
-                	return true;
-                }else return false;
-                
-		case "LIST":
+
+                if (TCPconnection.send(new Add(nom, surnom))) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            case "LIST":
                 String name;
                 System.out.print("A quel nom voulez-vous afficher les surnoms? : ");
                 name = sc.next();
-                
-                if(TCPconnection.send(new GetNicknames(name))){
-                	return true;	
-                }else return false;
-                
-		case "quit":
-            	return true;
+
+                if (TCPconnection.send(new GetNicknames(name))) {
+                    return true;
+                } else {
+                    return false;
+                }
+            default:
+                return false;
         }
-        return false;
     }
-    
+
 }
