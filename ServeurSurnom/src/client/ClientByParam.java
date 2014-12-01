@@ -28,19 +28,9 @@ public class ClientByParam extends Client {
      * @throws java.io.IOException
      */
     public boolean commandPrompt(String com, String... param) throws IOException {
-        System.out.println("Choississez la requete a executer ou \"quit\" pour sortir");
-        System.out.println("ADD : pour ajouter un nom et un surnom");
-        System.out.println("LIST : pour lister l'ensemble des surnoms");
-
-        boolean correct = false;
-
-        String userInput;
         //Demande, vérifie et envoie la commande
-        do {
-            System.out.print("Votre choix : ");
-            correct = commandSelection(com, param);
-        } while (correct == true);
-
+        boolean correct = commandSelection(com, param);
+        
         if (!com.equals("quit")) {
             while (true) {
                 Add cmd = (Add) TCPconnection.read();

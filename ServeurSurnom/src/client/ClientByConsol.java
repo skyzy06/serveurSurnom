@@ -88,22 +88,14 @@ public class ClientByConsol extends Client {
                     System.out.print("Voulez-vous en ajouter un autre? (no pour arrêter): ");
                 } while (!sc.next().equals("no"));
 
-                if (TCPconnection.send(new Add(nom, surnom))) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return TCPconnection.send(new Add(nom, surnom));
 
             case "LIST":
                 String name;
                 System.out.print("A quel nom voulez-vous afficher les surnoms? : ");
                 name = sc.next();
 
-                if (TCPconnection.send(new GetNicknames(name))) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return TCPconnection.send(new GetNicknames(name));
             default:
                 return false;
         }
