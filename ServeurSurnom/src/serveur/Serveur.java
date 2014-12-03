@@ -19,7 +19,7 @@ import protocole.command.Command;
  *
  * @author Administrateur
  */
-public class Serveur {
+public class Serveur implements Runnable{
 
 	private ServerSocket socketServeur;
 	private Socket clientSocket = null;

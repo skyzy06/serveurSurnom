@@ -13,7 +13,7 @@ import java.net.Socket;
  * @author achabert
  *
  */
-public class ObjectTCP extends Communication{
+public class ObjectTCP implements Communication{
 
 	String hostname;
 	int portnumber;

@@ -1,6 +1,6 @@
 package client;
 
-public abstract class Communication {
+public interface Communication {
 
 	
 }

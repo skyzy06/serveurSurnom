@@ -27,8 +27,6 @@ public class Client {
     
     private Scanner sc;
     
-    //private Prompt prompt;    
-
     public Client(String host, int portNumber) {
         this.hostName = host;
         this.portNumber = portNumber;
