@@ -10,10 +10,7 @@ public class ServeurLauncher {
         try {
             serveur.connect();
             serveur.run();
-
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 }

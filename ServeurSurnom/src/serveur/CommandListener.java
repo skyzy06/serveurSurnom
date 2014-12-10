@@ -7,8 +7,6 @@ package serveur;
 
 import java.io.*;
 import java.net.*;
-
-import protocole.*;
 import protocole.command.Add;
 import protocole.command.Command;
 import protocole.command.Exit;
@@ -20,7 +18,8 @@ import protocole.exception.GetNicknamesException;
  *
  * @author Administrateur
  */
-public class CommandListener implements Runnable{
+public class CommandListener implements Runnable {
+
     private Socket socket;
     private ObjectInputStream ois;
     private ObjectOutputStream out;
@@ -34,7 +33,7 @@ public class CommandListener implements Runnable{
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void run() {
         try {

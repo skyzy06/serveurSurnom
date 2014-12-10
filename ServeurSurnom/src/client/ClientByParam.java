@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import sun.rmi.transport.tcp.TCPConnection;
-import sun.rmi.transport.tcp.TCPEndpoint;
 import protocole.command.Add;
-import protocole.command.Command;
 import protocole.command.Exit;
 import protocole.command.GetNicknames;
 
@@ -30,7 +27,7 @@ public class ClientByParam extends Client {
     public boolean commandPrompt(String com, String... param) throws IOException {
         //Demande, vérifie et envoie la commande
         boolean correct = commandSelection(com, param);
-        
+
         if (!com.equals("quit")) {
             while (true) {
                 Add cmd = (Add) TCPconnection.read();

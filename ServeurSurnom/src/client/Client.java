@@ -1,13 +1,5 @@
 package client;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-import protocole.command.Add;
-import protocole.command.Exit;
-import protocole.command.GetNicknames;
-
 /**
  * Classe contenant la création et l'interprétation des commandes clients
  *

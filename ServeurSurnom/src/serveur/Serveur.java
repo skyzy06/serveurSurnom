@@ -1,14 +1,11 @@
 package serveur;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
-import protocole.command.Command;
 
 /**
  * Classe contenant la création et le lancement du serveur et l'écoute des
@@ -16,7 +13,7 @@ import protocole.command.Command;
  *
  * @author Administrateur
  */
-public class Serveur implements Runnable{
+public class Serveur implements Runnable {
 
     private ServerSocket socketServeur;
     private Socket clientSocket = null;
